@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Post, Param} from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -9,7 +9,9 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get("/productos/:codigo")
+  async getProducto(@Param('codigo') codigo: string): Promise<any> {
+    return this.appService.getProducto(Number(codigo));
+  }
 }
-
-
-
