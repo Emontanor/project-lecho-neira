@@ -10,6 +10,9 @@ export class Producto extends Document {
     nombre: string;  //nombre del producto
 
     @Prop({required: true})
+    precio: number;  //precio del producto
+
+    @Prop({required: true})
     existencias: number;  //cantidad del producto en existencia
 }
 
