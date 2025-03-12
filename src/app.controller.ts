@@ -60,6 +60,7 @@ export class AppController {
 
   @Put("/producto")
   async actualizaProducto(@Body() productoDto: ProductoDto): Promise<Producto> {
+    try {
       const productoActualizado = await this.appService.actualizarProducto(productoDto);
       return productoActualizado;
     } catch (error) {
