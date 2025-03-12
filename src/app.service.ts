@@ -1,34 +1,51 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Productos } from './schemas/productos.schema';
+import { Producto } from './schemas/productos.schema';
 import { Venta } from './schemas/venta.schema';
-import { throwError } from 'rxjs';
 
 @Injectable()
 export class AppService {
 
   constructor(
-    @InjectModel(Productos.name) private productosModel: Model<Productos>,
-    @InjectModel(Venta.name) private ventaModel: Model<Venta>
+    @InjectModel(Producto.name)
+    private readonly productoModel: Model<Producto>,
+    @InjectModel(Venta.name)
+    private readonly ventaModel: Model<Venta>,
   ) {}
 
   getHello(): string {
     return 'Hello World!';
   }
 
-  async getProducto(codigo: number): Promise<Productos | null> {
+  async obtenerProductosPrueba(): Promise<Producto[] | null> {
+    console.log("Obteniendo productos de prueba desde Service");
     try {
-      console.log("Buscando producto con codigo: ", codigo);
-      const producto = await this.productosModel.findOne({"codigo": Number(codigo)}).exec();
-      // console.log("Producto encontrado: ", producto);
-      if(!producto){
-        throw new Error('Producto no encontrado');
-      }
-      return producto;
+      const lista: Producto[] = await this.productoModel.find().exec();
+      console.log("Consulta ejecutada, resultado:", lista);
+      return lista;
     } catch (error) {
-      console.error("Error en getProducto: ", error);
+      console.error("Error en la consulta:", error);
       return null;
     }
   }
+
+  async crearProductoPrueba(): Promise<Producto | null> {
+    console.log("Creando producto de prueba desde Service");
+    try {
+      const producto = new this.productoModel({
+        codigo: 10,
+        nombre: "Producto de prueba",
+        precio: 100,
+        existencias: 8
+      });
+      const productoGuardado = await producto.save();
+      console.log("Producto guardado:", productoGuardado);
+      return productoGuardado;
+    } catch (error) {
+      console.error("Error en la creación:", error);
+      return null;
+    }
+  }  
+
 }

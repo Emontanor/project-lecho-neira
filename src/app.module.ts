@@ -1,24 +1,28 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { Producto, ProductoSchema } from './schemas/productos.schema';
+import { Venta, VentaSchema } from './schemas/venta.schema';
 
-import {Productos,ProductosSchema} from './schemas/productos.schema';
-import {Venta,VentaSchema} from './schemas/venta.schema';
 
-import * as dotenv from 'dotenv';
+const uri = "mongodb+srv://FhernandezM:234kAzLGdCWfO6WK@lechoneira.dmozf.mongodb.net/LechoNeira?retryWrites=true&w=majority&appName=LechoNeira"
 
-dotenv.config();
-
-const mongoUri = process.env.MONGO_URI;
-if (!mongoUri) {
-  throw new Error('❌ ERROR: La variable de entorno MONGO_URI no está definida.');
-}
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true,envFilePath:'.env',}),MongooseModule.forRoot(mongoUri),
-    MongooseModule.forFeature([{ name: Productos.name, schema: ProductosSchema },{ name: Venta.name, schema: VentaSchema }]),
+    MongooseModule.forRoot(uri),
+    MongooseModule.forFeature([
+      {
+        name: Producto.name,
+        schema: ProductoSchema,
+      }
+    ]),
+    MongooseModule.forFeature([
+      {
+        name: Venta.name,
+        schema: VentaSchema,
+      }
+    ]),
   ],
   controllers: [AppController],
   providers: [AppService],
