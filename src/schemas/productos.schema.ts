@@ -13,6 +13,12 @@ export class Producto extends Document{
     precio: number;  //precio del producto
 
     @Prop({required: true})
-    existencias: number;  //cantidad del producto en existencia
+    existenciasLocal1: number;  //cantidad del producto en existencia en el local 1
+
+    @Prop({required: true})
+    existenciasLocal2: number;  //cantidad del producto en existencia en el local 2ç
+
+    @Prop({required: false})
+    imageUrl: string;  //url de la imagen del producto
 }
 export const ProductoSchema = SchemaFactory.createForClass(Producto);

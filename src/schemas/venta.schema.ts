@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Pedido } from '../domains/pedido';
 
 @Schema()
 export class Venta extends Document{
     @Prop({required: true})
-    productos: Map<string,number>;  //lista de productos <producto,cantidad>
+    pedidos: Pedido[];  //lista de pedidos
 
     @Prop({required: true})
     total: number;  //costo total de la venta
