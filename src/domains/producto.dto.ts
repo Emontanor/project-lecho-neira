@@ -1,8 +1,8 @@
 export interface ProductoDto {  
     codigo: number;  
-    nombre: string;  
-    precio: number;  
-    existenciasLocal1: number;
-    existenciasLocal2: number;
-    imageUrl?: string;
+    nombre?: string | null;  
+    precio?: number | null;  
+    existenciasLocal1?: number | null;
+    existenciasLocal2?: number | null;
+    imageUrl?: string | null;
 }   

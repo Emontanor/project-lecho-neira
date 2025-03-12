@@ -12,10 +12,10 @@ export class Producto extends Document{
     @Prop({required: true})
     precio: number;  //precio del producto
 
-    @Prop({required: true})
+    @Prop({required: false})
     existenciasLocal1: number;  //cantidad del producto en existencia en el local 1
 
-    @Prop({required: true})
+    @Prop({required: false})
     existenciasLocal2: number;  //cantidad del producto en existencia en el local 2ç
 
     @Prop({required: false})

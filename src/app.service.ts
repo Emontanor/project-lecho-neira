@@ -108,4 +108,48 @@ export class AppService {
     }
   }
 
+  actualizarProducto = async(productoDto: ProductoDto): Promise<Producto> => {
+    try {
+      const producto = new this.productoRepository(productoDto);
+      if(producto.nombre !== undefined){
+        await this.productoRepository.updateOne(
+          { codigo: producto.codigo },
+          { $set: { nombre: producto.nombre } }
+        ).exec();
+      }
+      if(producto.precio !== undefined){
+        await this.productoRepository.updateOne(
+          { codigo: producto.codigo },
+          { $set: { precio: producto.precio } }
+        ).exec();
+      }
+      if(producto.existenciasLocal1 !== undefined){
+        await this.productoRepository.updateOne(
+          { codigo: producto.codigo },
+          { $set: { existenciasLocal1: producto.existenciasLocal1 } }
+        ).exec();
+      }
+      if(producto.existenciasLocal2 !== undefined){
+        await this.productoRepository.updateOne(
+          { codigo: producto.codigo },
+          { $set: { existenciasLocal2: producto.existenciasLocal2 } }
+        ).exec();
+      }
+      if(producto.imageUrl !== undefined){
+        await this.productoRepository.updateOne(
+          { codigo: producto.codigo },
+          { $set: { imageUrl: producto.imageUrl } }
+        ).exec();
+      }
+      const productoActualizado = await this.productoRepository.findOne({ codigo: producto.codigo }).exec();
+      if(!productoActualizado){
+        throw new Error('Producto no encontrado');
+      }
+      return productoActualizado;
+    } catch (error) {
+      console.error("Error en el servicio:", error);
+      throw error;
+    }
+  }
+
 }
