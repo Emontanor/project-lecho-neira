@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Param, Put, Body} from '@nestjs/common';
+import { Controller, Get, Post, Param, Put, Body, Query} from '@nestjs/common';
 import { AppService } from './app.service';
 import { Producto } from './schemas/productos.schema';
-import { Venta } from './schemas/venta.schema';
 import { ProductoDto } from './domains/producto.dto';
+import { Locals } from './domains/locals';
+
 
 
 @Controller()
@@ -15,15 +16,14 @@ export class AppController {
   }
   
   @Get("/producto")
-  async obtenerProductoPrueba(@Body() productoDto: ProductoDto): Promise<Producto[] | null> {
+  async obtenerProductoPrueba(@Query("localCode") localCode: string): Promise<Producto[]> {
     try {
-      console.log("Obteniendo productos de prueba desde Controller");
-      const productos = await this.appService.obtenerProductosPrueba();
-      console.log("Productos obtenidos:", productos);
+      const localCodeEnum = parseInt(localCode) as Locals;
+      const productos = await this.appService.obtenerProductosPrueba(localCodeEnum);
       return productos;
     } catch (error) {
       console.error("Error en el controlador:", error);
-      return null;
+      throw error;
     }
   }
 

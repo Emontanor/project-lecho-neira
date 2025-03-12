@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Producto } from './schemas/productos.schema';
 import { Venta } from './schemas/venta.schema';
 import { ProductoDto } from './domains/producto.dto';
+import { Locals } from './domains/locals';
 
 @Injectable()
 export class AppService {
@@ -19,24 +20,29 @@ export class AppService {
     return 'Hello World!';
   }
 
-  async obtenerProductosPrueba(): Promise<Producto[] | null> {
-    console.log("Obteniendo productos de prueba desde Service");
+  obtenerProductosPrueba = async(localCode: Locals): Promise<Producto[]> => {
     try {
-      const lista: Producto[] = await this.productoRepository.find().exec();
-      console.log("Consulta ejecutada, resultado:", lista);
+      let lista: Producto[] = [];
+      console.log("LocalCode:", localCode);
+      if(localCode === Locals.LOCAL_15){
+        console.log("Local 15");
+        lista = await this.productoRepository.find({ existenciasLocal1: { $gt: 0 } }).exec();
+      }
+      else{
+        console.log("Local 16");
+        lista = await this.productoRepository.find({ existenciasLocal2: { $gt: 0 } }).exec();
+      }
       return lista;
     } catch (error) {
       console.error("Error en la consulta:", error);
-      return null;
+      throw error;
     }
   }
 
   crearProductoPrueba = async(productoDto: ProductoDto): Promise<Producto> => {
-    console.log("Creando producto de prueba desde Service");
     try {
       const producto = new this.productoRepository(productoDto);
       const productoGuardado = await producto.save();
-      console.log("Producto guardado:", productoGuardado);
       return productoGuardado;
     } catch (error) {
       console.error("Error en la creación:", error);
