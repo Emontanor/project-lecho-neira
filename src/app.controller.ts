@@ -60,12 +60,6 @@ export class AppController {
 
   @Put("/producto")
   async actualizaProducto(@Body() productoDto: ProductoDto): Promise<Producto> {
-    try {
-      const productoDto: ProductoDto = {
-        codigo: 4,
-        nombre: "Producto actualizado",
-        existenciasLocal2: 10
-      }
       const productoActualizado = await this.appService.actualizarProducto(productoDto);
       return productoActualizado;
     } catch (error) {
