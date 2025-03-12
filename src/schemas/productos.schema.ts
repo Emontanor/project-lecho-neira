@@ -6,10 +6,10 @@ export class Producto extends Document{
     @Prop({required: true, unique: true})
     codigo: number;  //codigo unico del producto
 
-    @Prop({required: true})
+    @Prop({required: false})
     nombre: string;  //nombre del producto
 
-    @Prop({required: true})
+    @Prop({required: false})
     precio: number;  //precio del producto
 
     @Prop({required: false})
