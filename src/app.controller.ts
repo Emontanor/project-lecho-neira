@@ -29,7 +29,6 @@ export class AppController {
 
   @Post("/producto")
   async crearProductoPrueba(@Body() productoDto: ProductoDto): Promise<Producto> {
-    console.log("Creando producto de prueba desde Controller");
     try {
       const producto = await this.appService.crearProductoPrueba(productoDto);
       console.log("Producto creado:", producto);
