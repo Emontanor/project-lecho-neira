@@ -5,6 +5,10 @@ import { Producto } from './schemas/productos.schema';
 import { Venta } from './schemas/venta.schema';
 import { ProductoDto } from './domains/producto.dto';
 import { Locals } from './domains/locals';
+import { Pedido } from './domains/pedido';
+import { PedidoDto } from './domains/pedido.dto';
+import { async } from 'rxjs';
+import { MetodoPago } from './domains/metodosPago';
 
 @Injectable()
 export class AppService {
@@ -49,5 +53,59 @@ export class AppService {
       throw error;
     }
   } 
-   
+
+  crearVenta = async(pedidos: Pedido[],localCode: Locals, metodoPago: MetodoPago): Promise<Venta> => {
+    try{
+      let total: number = 0;
+      for (const pedido of pedidos) {
+        const producto = await this.productoRepository.findOne({ codigo: pedido.codigo }).exec();
+        if (producto) {
+          console.log(`Precio del producto con código ${pedido.codigo}: ${producto.precio}`);
+          if(localCode === Locals.LOCAL_15){
+            await this.productoRepository.updateOne(
+              { codigo: producto.codigo },
+              { $inc: { existenciasLocal1: -pedido.cantidad } }
+            )
+          }else if(localCode === Locals.LOCAL_16){
+            await this.productoRepository.updateOne(
+              { codigo: producto.codigo },
+              { $inc: { existenciasLocal2: -pedido.cantidad } }
+            )
+          }
+          total += producto.precio * pedido.cantidad;
+        }
+      }
+      const venta = new this.ventaRepository({ pedidos, total, local: localCode, metodoPago: metodoPago });
+      const ventaGuardada = await venta.save();
+      return ventaGuardada;     
+    }
+    catch(error){
+      console.error("Error en el servicio:", error);
+      throw error;
+    }
+  }
+
+  convertirPedidoDtoAPedido = async(PedidosDto: PedidoDto[]): Promise<Pedido[]> => {
+    try{
+      let pedidos: Pedido[] = [];
+      for(const pedidoDto of PedidosDto){
+        const producto = await this.productoRepository.findOne({ codigo: pedidoDto.codigo }).exec();
+        if(producto){
+          const pedido: Pedido = {
+            codigo: producto.codigo,
+            nombre: producto.nombre,
+            precio: producto.precio,
+            cantidad: pedidoDto.cantidad
+          };
+          pedidos.push(pedido);
+        }
+      }
+      return pedidos;
+    }
+    catch(error){
+      console.error("Error en el servicio:", error);
+      throw error;
+    }
+  }
+
 }

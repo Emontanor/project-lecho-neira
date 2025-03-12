@@ -3,6 +3,10 @@ import { AppService } from './app.service';
 import { Producto } from './schemas/productos.schema';
 import { ProductoDto } from './domains/producto.dto';
 import { Locals } from './domains/locals';
+import { Venta } from './schemas/venta.schema';
+import { Pedido } from './domains/pedido';
+import { PedidoDto } from './domains/pedido.dto';
+import { MetodoPago } from './domains/metodosPago';
 
 
 
@@ -38,6 +42,20 @@ export class AppController {
       console.error("Error en el controlador:", error);
       throw error;
     } 
+  }
+
+  @Post("/venta")
+  async crearVenta(@Body() pedidosDto: PedidoDto[],@Query("localCode") localCode:string,@Query("matodoPago") metodoPago:string): Promise<Venta> {
+    try{
+      const pedidos: Pedido[] = await this.appService.convertirPedidoDtoAPedido(pedidosDto);
+      const venta = await this.appService.crearVenta(pedidos,parseInt(localCode) as Locals,parseInt(metodoPago) as MetodoPago);
+      console.log("Venta creada:", venta);
+      return venta;
+    }
+    catch (error){
+      console.error("Error en el controlador:", error);
+      throw error;
+    }
   }
 
 }

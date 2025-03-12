@@ -1,6 +1,8 @@
-import { ObjectId } from "mongodb";
+import { Producto } from "src/schemas/productos.schema";
 
 export interface Pedido {
-    id_producto: ObjectId;
-    cantidad: Number;
+    codigo: Number;
+    nombre: string;
+    precio: Number;
+    cantidad: number;
 }
