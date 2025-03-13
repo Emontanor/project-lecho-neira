@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Put, Body, Query} from '@nestjs/common';
+import { Controller, Get, Post, Param, Put, Body, Query, Delete} from '@nestjs/common';
 import { AppService } from './app.service';
 import { Producto } from './schemas/productos.schema';
 import { ProductoDto } from './domains/producto.dto';
@@ -20,10 +20,10 @@ export class AppController {
   }
   
   @Get("/producto")
-  async obtenerProductoPrueba(@Query("localCode") localCode: string): Promise<Producto[]> {
+  async obtenerProductos(@Query("localCode") localCode: string): Promise<Producto[]> {
     try {
       const localCodeEnum = parseInt(localCode) as Locals;
-      const productos = await this.appService.obtenerProductosPrueba(localCodeEnum);
+      const productos = await this.appService.obtenerProductos(localCodeEnum);
       return productos;
     } catch (error) {
       console.error("Error en el controlador:", error);
@@ -32,9 +32,9 @@ export class AppController {
   }
 
   @Post("/producto")
-  async crearProductoPrueba(@Body() productoDto: ProductoDto): Promise<Producto> {
+  async crearProducto(@Body() productoDto: ProductoDto): Promise<Producto> {
     try {
-      const producto = await this.appService.crearProductoPrueba(productoDto);
+      const producto = await this.appService.crearProducto(productoDto);
       console.log("Producto creado:", producto);
       return producto;
     }
@@ -42,6 +42,40 @@ export class AppController {
       console.error("Error en el controlador:", error);
       throw error;
     } 
+  }
+
+  @Put("/producto")
+  async actualizarProducto(@Body() productoDto: ProductoDto): Promise<Producto> {
+    try {
+      const productoActualizado = await this.appService.actualizarProducto(productoDto);
+      return productoActualizado;
+    } catch (error) {
+      console.error("Error en el controlador:", error);
+      throw error;
+    }
+  }
+
+  @Delete("/producto")
+  async eliminarProducto(@Query("codigo") codigo: string): Promise<Producto> {
+    try {
+      const productoEliminado = await this.appService.eliminarProducto(parseInt(codigo));
+      return productoEliminado;
+    } catch (error) {
+      console.error("Error en el controlador:", error);
+      throw error;
+    }
+  }
+
+  @Get("/venta")
+  async obtenerVentas(@Query("localCode") localCode: string): Promise<Venta[]> {
+    try {
+      const localCodeEnum = parseInt(localCode) as Locals;
+      const ventas = await this.appService.obtenerVentas(localCodeEnum);
+      return ventas;
+    } catch (error) {
+      console.error("Error en el controlador:", error);
+      throw error;
+    }
   }
 
   @Post("/venta")
@@ -53,17 +87,6 @@ export class AppController {
       return venta;
     }
     catch (error){
-      console.error("Error en el controlador:", error);
-      throw error;
-    }
-  }
-
-  @Put("/producto")
-  async actualizaProducto(@Body() productoDto: ProductoDto): Promise<Producto> {
-    try {
-      const productoActualizado = await this.appService.actualizarProducto(productoDto);
-      return productoActualizado;
-    } catch (error) {
       console.error("Error en el controlador:", error);
       throw error;
     }

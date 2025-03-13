@@ -24,16 +24,13 @@ export class AppService {
     return 'Hello World!';
   }
 
-  obtenerProductosPrueba = async(localCode: Locals): Promise<Producto[]> => {
+  obtenerProductos = async(localCode: Locals): Promise<Producto[]> => {
     try {
       let lista: Producto[] = [];
-      console.log("LocalCode:", localCode);
       if(localCode === Locals.LOCAL_15){
-        console.log("Local 15");
         lista = await this.productoRepository.find({ existenciasLocal1: { $gt: 0 } }).exec();
       }
       else{
-        console.log("Local 16");
         lista = await this.productoRepository.find({ existenciasLocal2: { $gt: 0 } }).exec();
       }
       return lista;
@@ -43,7 +40,7 @@ export class AppService {
     }
   }
 
-  crearProductoPrueba = async(productoDto: ProductoDto): Promise<Producto> => {
+  crearProducto = async(productoDto: ProductoDto): Promise<Producto> => {
     try {
       const producto = new this.productoRepository(productoDto);
       const productoGuardado = await producto.save();
@@ -52,7 +49,80 @@ export class AppService {
       console.error("Error en la creación:", error);
       throw error;
     }
-  } 
+  }
+  
+  actualizarProducto = async(productoDto: ProductoDto): Promise<Producto> => {
+    try {
+      const producto = new this.productoRepository(productoDto);
+      if(producto.nombre !== undefined){
+        await this.productoRepository.updateOne(
+          { codigo: producto.codigo },
+          { $set: { nombre: producto.nombre } }
+        ).exec();
+      }
+      if(producto.precio !== undefined){
+        await this.productoRepository.updateOne(
+          { codigo: producto.codigo },
+          { $set: { precio: producto.precio } }
+        ).exec();
+      }
+      if(producto.existenciasLocal1 !== undefined){
+        await this.productoRepository.updateOne(
+          { codigo: producto.codigo },
+          { $set: { existenciasLocal1: producto.existenciasLocal1 } }
+        ).exec();
+      }
+      if(producto.existenciasLocal2 !== undefined){
+        await this.productoRepository.updateOne(
+          { codigo: producto.codigo },
+          { $set: { existenciasLocal2: producto.existenciasLocal2 } }
+        ).exec();
+      }
+      if(producto.imageUrl !== undefined){
+        await this.productoRepository.updateOne(
+          { codigo: producto.codigo },
+          { $set: { imageUrl: producto.imageUrl } }
+        ).exec();
+      }
+      const productoActualizado = await this.productoRepository.findOne({ codigo: producto.codigo }).exec();
+      if(!productoActualizado){
+        throw new Error('Producto no encontrado');
+      }
+      return productoActualizado;
+    } catch (error) {
+      console.error("Error en el servicio:", error);
+      throw error;
+    }
+  }
+
+  eliminarProducto = async(codigo: number): Promise<Producto> => {
+    try {
+      const productoEliminado = await this.productoRepository.findOneAndDelete({ codigo: codigo }).exec();
+      if (!productoEliminado) {
+        throw new Error('Producto no encontrado');
+      }
+      return productoEliminado;
+    } catch (error) {
+      console.error("Error en el servicio:", error);
+      throw error;
+    }
+  }
+
+  obtenerVentas = async(localCode: Locals): Promise<Venta[]> => {
+    try {
+      let lista: Venta[] = [];
+      if(localCode === Locals.LOCAL_15){
+        lista = await this.ventaRepository.find({ local: 1 }).exec();
+      }
+      else{
+        lista = await this.ventaRepository.find({ local: 2}).exec();
+      }
+      return lista;
+    } catch (error) {
+      console.error("Error en la consulta:", error);
+      throw error;
+    }
+  }
 
   crearVenta = async(pedidos: Pedido[],localCode: Locals, metodoPago: MetodoPago): Promise<Venta> => {
     try{
@@ -108,48 +178,6 @@ export class AppService {
     }
   }
 
-  actualizarProducto = async(productoDto: ProductoDto): Promise<Producto> => {
-    try {
-      const producto = new this.productoRepository(productoDto);
-      if(producto.nombre !== undefined){
-        await this.productoRepository.updateOne(
-          { codigo: producto.codigo },
-          { $set: { nombre: producto.nombre } }
-        ).exec();
-      }
-      if(producto.precio !== undefined){
-        await this.productoRepository.updateOne(
-          { codigo: producto.codigo },
-          { $set: { precio: producto.precio } }
-        ).exec();
-      }
-      if(producto.existenciasLocal1 !== undefined){
-        await this.productoRepository.updateOne(
-          { codigo: producto.codigo },
-          { $set: { existenciasLocal1: producto.existenciasLocal1 } }
-        ).exec();
-      }
-      if(producto.existenciasLocal2 !== undefined){
-        await this.productoRepository.updateOne(
-          { codigo: producto.codigo },
-          { $set: { existenciasLocal2: producto.existenciasLocal2 } }
-        ).exec();
-      }
-      if(producto.imageUrl !== undefined){
-        await this.productoRepository.updateOne(
-          { codigo: producto.codigo },
-          { $set: { imageUrl: producto.imageUrl } }
-        ).exec();
-      }
-      const productoActualizado = await this.productoRepository.findOne({ codigo: producto.codigo }).exec();
-      if(!productoActualizado){
-        throw new Error('Producto no encontrado');
-      }
-      return productoActualizado;
-    } catch (error) {
-      console.error("Error en el servicio:", error);
-      throw error;
-    }
-  }
+  
 
 }
