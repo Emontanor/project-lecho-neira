@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import * as jwt from 'jsonwebtoken'; 
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Producto } from './schemas/productos.schema';
@@ -13,12 +14,25 @@ import { MetodoPago } from './domains/metodosPago';
 @Injectable()
 export class AppService {
 
+  private readonly validSignature = "lechoneira";
+
   constructor(
     @InjectModel(Producto.name)
     private readonly productoRepository: Model<Producto>,
     @InjectModel(Venta.name)
     private readonly ventaRepository: Model<Venta>,
   ) {}
+
+  validarToken = async(token: string): Promise<boolean> => {
+    console.log(token);
+    try{
+      const decoded = jwt.verify(token, this.validSignature, {algorithms:["HS256"]});
+      return !!decoded;
+    }catch(error){
+      console.error("Error en el servicio:", error);
+      return false;
+    } 
+  }
 
   getHello(): string {
     return 'Hello World!';

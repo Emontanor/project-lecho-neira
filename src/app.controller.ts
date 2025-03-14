@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Put, Body, Query, Delete} from '@nestjs/common';
+import { Controller, Get, Post, Param, Put, Body, Query, Delete, Headers, UnauthorizedException} from '@nestjs/common';
 import { AppService } from './app.service';
 import { Producto } from './schemas/productos.schema';
 import { ProductoDto } from './domains/producto.dto';
@@ -15,7 +15,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getHello(): string {
+  async getHello(): Promise<String>{
     return this.appService.getHello();
   }
   

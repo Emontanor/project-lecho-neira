@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Producto, ProductoSchema } from './schemas/productos.schema';
 import { Venta, VentaSchema } from './schemas/venta.schema';
+import { AuthGuard } from './auth.guard';
 
 
 const uri = "mongodb+srv://FhernandezM:234kAzLGdCWfO6WK@lechoneira.dmozf.mongodb.net/LechoNeira?retryWrites=true&w=majority&appName=LechoNeira"
@@ -25,6 +26,12 @@ const uri = "mongodb+srv://FhernandezM:234kAzLGdCWfO6WK@lechoneira.dmozf.mongodb
     ]),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: 'APP_GUARD',
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}
