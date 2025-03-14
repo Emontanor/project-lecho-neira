@@ -1,8 +1,8 @@
 import { Producto } from "src/schemas/productos.schema";
 
 export interface Pedido {
-    codigo: Number;
+    codigo: number;
     nombre: string;
-    precio: Number;
+    precio: number;
     cantidad: number;
 }
