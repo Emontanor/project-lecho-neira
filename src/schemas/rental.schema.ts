@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema()
-export class Bandeja extends Document{
+export class Rental extends Document{
 
     @Prop({required: false})
     name: string;  //nombre del producto
@@ -14,4 +14,4 @@ export class Bandeja extends Document{
     amount: number;  //cantidad del producto en existencia en el local 1
 
 }
-export const ProductoSchema = SchemaFactory.createForClass(Bandeja);
+export const RentalSchema = SchemaFactory.createForClass(Rental);

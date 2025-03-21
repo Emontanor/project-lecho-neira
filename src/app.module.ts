@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { Producto, ProductoSchema } from './schemas/productos.schema';
 import { Venta, VentaSchema } from './schemas/venta.schema';
 import { AuthGuard } from './auth.guard';
+import { Rental, RentalSchema } from './schemas/rental.schema';
 
 
 const uri = "mongodb+srv://FhernandezM:234kAzLGdCWfO6WK@lechoneira.dmozf.mongodb.net/LechoNeira?retryWrites=true&w=majority&appName=LechoNeira"
@@ -22,6 +23,12 @@ const uri = "mongodb+srv://FhernandezM:234kAzLGdCWfO6WK@lechoneira.dmozf.mongodb
       {
         name: Venta.name,
         schema: VentaSchema,
+      }
+    ]),
+    MongooseModule.forFeature([
+      {
+        name: Rental.name,
+        schema: RentalSchema,
       }
     ]),
   ],
