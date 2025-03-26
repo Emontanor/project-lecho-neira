@@ -2,6 +2,7 @@ import { Controller, Get, Post, Param, Put, Body, Query, Delete, Headers, Unauth
 import { AppService } from './app.service';
 import { Rental } from './schemas/rental.schema';
 import { RentalDto } from './domains/rental.dto';
+import { Public } from './decorators/public.decorator';
 
 
 
@@ -10,6 +11,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
+  @Public()
   async getHealth(): Promise<String>{
     return this.appService.getHealth();
   }
