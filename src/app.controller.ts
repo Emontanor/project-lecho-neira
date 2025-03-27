@@ -3,7 +3,7 @@ import { AppService } from './app.service';
 import { Rental } from './schemas/rental.schema';
 import { RentalDto } from './domains/rental.dto';
 import { Public } from './decorators/public.decorator';
-
+import * as jwt from 'jsonwebtoken';
 
 
 @Controller()
@@ -26,6 +26,16 @@ export class AppController {
       console.error("Error en el controlador:", error);
       throw error;
     }
+  }
+
+  @Post('/generate-token')
+  @Public()
+  async generateToken(@Headers('x-apikey') apiKey: string): Promise<{ token: string }> {
+    if (!apiKey) {
+      throw new UnauthorizedException('x-apikey header is missing');
+    }
+    const token = jwt.sign({}, apiKey, { expiresIn: '1h' });
+    return { token };
   }
 
   @Get("/rental/:Phone")
